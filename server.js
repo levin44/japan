@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 // Enable requests from origins
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3001"],
     methods: ["POST", "GET", "DELETE", "UPDATE", "PUT", "PATCH"],
     credentials: true
 }));

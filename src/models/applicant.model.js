@@ -119,17 +119,104 @@ module.exports = {
 
 
   getApplicantsById: (id, callBack) => {
-    sql.query(
-      `SELECT * FROM applicant WHERE Desig_ID = ?`,
-      [id],
-      (error, results) => {
-        if (error) {
-          return callBack(error);
-        }
-        return callBack(null, results);
+    // Query to get applicant details
+    const applicantQuery = `SELECT * FROM applicant WHERE id = ?`;
+  
+    sql.query(applicantQuery, [id], (error, applicantResults) => {
+      if (error) {
+        return callBack(error);
       }
-    );
+      if (applicantResults.length === 0) {
+        return callBack(null, { message: "Applicant not found" });
+      }
+  
+      // Query to get education details
+      const educationQuery = `SELECT * FROM educationData WHERE applicant_id = ?`;
+      sql.query(educationQuery, [id], (educationError, educationResults) => {
+        if (educationError) {
+          return callBack(educationError);
+        }
+  
+        // Query to get work history details
+        const workHistoryQuery = `SELECT * FROM workHistoryData WHERE applicant_id = ?`;
+        sql.query(workHistoryQuery, [id], (workHistoryError, workHistoryResults) => {
+          if (workHistoryError) {
+            return callBack(workHistoryError);
+          }
+  
+          // Query to get qualification details
+          const qualificationQuery = `SELECT * FROM qualificationData WHERE applicant_id = ?`;
+          sql.query(qualificationQuery, [id], (qualificationError, qualificationResults) => {
+            if (qualificationError) {
+              return callBack(qualificationError);
+            }
+  
+             // Combine all results and map the data
+          const mappedApplicant = {
+            id: `${applicantResults[0].id}`,
+            fullName: `${applicantResults[0].full_name}`,
+            fullNameJapan: `${applicantResults[0].full_name_jp}`,
+            dateOfBirth: `${applicantResults[0].date_of_birth}`,
+            address: `${applicantResults[0].address}`,
+            addressJapan: `${applicantResults[0].address_jp}`,
+            statusOfResidence: `${applicantResults[0].status_of_residence}`,
+            statusOfResidenceJapan: `${applicantResults[0].status_of_residence_jp}`,
+            sex: `${applicantResults[0].sex}`,
+            nationality: `${applicantResults[0].nationality}`,
+            nationalityJapan: `${applicantResults[0].nationality_jp}`,
+            mobile: `${applicantResults[0].mobile}`,
+            email: `${applicantResults[0].email}`,
+            maritalStatus: `${applicantResults[0].marital_status}`,
+            children: `${applicantResults[0].children}`,
+            bloodType: `${applicantResults[0].blood_type}`,
+            comfortableHand: `${applicantResults[0].comfortable_hand}`,
+            height: `${applicantResults[0].height}`,
+            weight: `${applicantResults[0].weight}`,
+            smoke: `${applicantResults[0].smoke}`,
+            alcohol: `${applicantResults[0].alcohol}`,
+            tattoo: `${applicantResults[0].tattoo}`,
+            colorBlindness: `${applicantResults[0].color_blindness}`,
+            beenToJapan: `${applicantResults[0].been_to_japan}`,
+            // Adding education, workHistory, and qualifications as arrays of objects
+            education: educationResults.map(item => ({
+              year: item.year,
+              month: item.month,
+              background: item.background,
+              yearJapan: item.year_japan,
+              monthJapan: item.month_japan,
+              backgroundJapan: item.background_japan
+            })),
+            workHistory: workHistoryResults.map(item => ({
+              year: item.year,
+              month: item.month,
+              companyName: item.company_name,
+              occupation: item.occupation,
+              location: item.location,
+              yearJapan: item.year_japan,
+              monthJapan: item.month_japan,
+              companyNameJapan: item.company_name_japan,
+              occupationJapan: item.occupation_japan,
+              locationJapan: item.location_japan
+            })),
+            qualifications: qualificationResults.map(item => ({
+              year: item.year,
+              month: item.month,
+              qualification: item.qualification,
+              yearJapan: item.year_japan,
+              monthJapan: item.month_japan,
+              qualificationJapan: item.qualification_japan
+            }))
+          };
+// console.log("mappedApplicant", mappedApplicant);
+
+            // Combine all results and return
+            return callBack(null, mappedApplicant);
+          });
+        });
+      });
+    });
   },
+  
 
   getApplicantsByDepartment: (id, callBack) => {
     sql.query(
@@ -146,13 +233,20 @@ module.exports = {
 
   getApplicants: callBack => {
     sql.query(
-      `SELECT * FROM applicant`,
+      `SELECT id,full_name, date_of_birth, sex FROM applicant`,
       [],
       (error, results) => {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results);
+        const mappedNames = results.map((item) => ({
+          id: `${item.id}`,
+          fullName: `${item.full_name}`,
+          dateOfBirth: `${item.date_of_birth}`,
+          sex: `${item.sex}`,
+        }))
+
+        return callBack(null, mappedNames);
       }
     );
   },

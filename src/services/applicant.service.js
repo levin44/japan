@@ -1,9 +1,9 @@
-const designationModel = require('../models/applicant.model');
+const applicantModel = require('../models/applicant.model');
 
 module.exports = {
   createApplicant: (data, callBack) => {
 
-    designationModel.createApplicant(data, (err, results) => {
+    applicantModel.createApplicant(data, (err, results) => {
       if (err) {
         return callBack(err);
       }
@@ -12,19 +12,21 @@ module.exports = {
   },
 
   getApplicantsById: (id, callBack) => {
-    designationModel.getApplicantsById(id, (err, results) => {
+    applicantModel.getApplicantsById(id, (err, results) => {
+      console.log("results nisal", results.length);
+      
       if (err) {
         return callBack(err);
       }
-      if (!results.length) {
+      if (!results) {
         return callBack(new Error('Record not found'));
       }
-      return callBack(null, results[0]);
+      return callBack(null, results);
     });
   },
 
   getApplicantsByDepartment: (id, callBack) => {
-    designationModel.getApplicantsByDepartment(id, (err, results) => {
+    applicantModel.getApplicantsByDepartment(id, (err, results) => {
       if (err) {
         return callBack(err);
       }
@@ -36,7 +38,7 @@ module.exports = {
   },
 
   getApplicants: callBack => {
-    designationModel.getApplicants((err, results) => {
+    applicantModel.getApplicants((err, results) => {
       if (err) {
         return callBack(err);
       }
@@ -46,7 +48,7 @@ module.exports = {
 
   updateApplicant: (id, data, callBack) => {
 
-    designationModel.updateApplicant(id, data, (err, results) => {
+    applicantModel.updateApplicant(id, data, (err, results) => {
       if (err) {
         return callBack(err);
       }
@@ -55,7 +57,7 @@ module.exports = {
   },
 
   deleteApplicant: (id, callBack) => {
-    designationModel.deleteApplicant(id, (err, results) => {
+    applicantModel.deleteApplicant(id, (err, results) => {
       if (err) {
         return callBack(err);
       }

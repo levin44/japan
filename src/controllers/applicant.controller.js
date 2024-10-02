@@ -1,9 +1,9 @@
-const designationService = require('../services/applicant.service');
+const applicantService = require('../services/applicant.service');
 
 module.exports = {
   createApplicant: (req, res) => {
     const data = req.body;
-    designationService.createApplicant(data, (err, results) => {
+    applicantService.createApplicant(data, (err, results) => {
       if (err) {
         return res.status(500).json({ success: 0, message: err.message });
       }
@@ -13,7 +13,7 @@ module.exports = {
 
   getApplicantsById: (req, res) => {
     const id = req.params.id;
-    designationService.getApplicantsById(id, (err, results) => {
+    applicantService.getApplicantsById(id, (err, results) => {
       if (err) {
         return res.status(404).json({ success: 0, message: err.message });
       }
@@ -23,7 +23,7 @@ module.exports = {
 
   getApplicantsByDepartment: (req, res) => {
     const id = req.params.id;
-    designationService.getApplicantsByDepartment(id, (err, results) => {
+    applicantService.getApplicantsByDepartment(id, (err, results) => {
       if (err) {
         return res.status(404).json({ success: 0, message: err.message });
       }
@@ -32,7 +32,7 @@ module.exports = {
   },
 
   getApplicants: (req, res) => {
-    designationService.getApplicants((err, results) => {
+    applicantService.getApplicants((err, results) => {
       if (err) {
         return res.status(500).json({ success: 0, message: err.message });
       }
@@ -43,7 +43,7 @@ module.exports = {
   updateApplicant: (req, res) => {
     const data = req.body;
     const id = req.params.id
-    designationService.updateApplicant(id, data, (err, results) => {
+    applicantService.updateApplicant(id, data, (err, results) => {
       if (err) {
         return res.status(500).json({ success: 0, message: err.message });
       }
@@ -53,7 +53,7 @@ module.exports = {
 
   deleteApplicant: (req, res) => {
     const id = req.params.id;
-    designationService.deleteApplicant(id, (err, results) => {
+    applicantService.deleteApplicant(id, (err, results) => {
       if (err) {
         return res.status(500).json({ success: 0, message: err.message });
       }
