@@ -1,13 +1,62 @@
 const applicantService = require('../services/applicant.service');
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: './uploads/', // You can set a different path if needed
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage }).fields([
+{ name: 'personalPhoto' },
+{ name: 'cv' },
+{ name: 'interview' },
+{ name: 'ptTest' },
+{ name: 'ptTestCertificate' },
+{ name: 'passportCopy' },
+{ name: 'driverLicense' },
+{ name: 'qualificationEducation' },
+{ name: 'qualificationWorking' }
+]);
 
 module.exports = {
+  
   createApplicant: (req, res) => {
-    const data = req.body;
-    applicantService.createApplicant(data, (err, results) => {
+    upload(req, res, (err) => {
       if (err) {
-        return res.status(500).json({ success: 0, message: err.message });
+        return res.status(500).json({ success: 0, message: 'File upload failed: ' + err.message });
       }
-      return res.status(200).json({ success: 1, data: results });
+
+      // Log the incoming form data and file paths
+      console.log('Request body:', req.body); // Should contain text fields
+      console.log('Request files:', req.files); // Should contain uploaded file data
+
+      const formData = req.body; // Text fields (e.g., fullName, email, etc.)
+      const {
+        personalPhoto, cv, interview, ptTest, ptTestCertificate, passportCopy, driverLicense, qualificationEducation, qualificationWorking
+      } = req.files;
+      
+      const fileData = {
+        personalPhoto: req.files.personalPhoto ? req.files.personalPhoto[0].path : null,
+        cv: req.files.cv ? req.files.cv[0].path : null,
+        interview: interview ? interview[0].path : null,
+        ptTest: ptTest ? ptTest[0].path : null,
+        ptTestCertificate: ptTestCertificate ? ptTestCertificate[0].path : null,
+        passportCopy: passportCopy ? passportCopy[0].path : null,
+        driverLicense: driverLicense ? driverLicense[0].path : null,
+        qualificationEducation: qualificationEducation ? qualificationEducation[0].path : null,
+        qualificationWorking: qualificationWorking ? qualificationWorking[0].path : null,
+      };
+
+      // Now call your service to handle saving the data
+      applicantService.createApplicant(formData, fileData, (err, results) => {
+        if (err) {
+          return res.status(500).json({ success: 0, message: err.message });
+        }
+        return res.status(200).json({ success: 1, data: results });
+      });
     });
   },
 

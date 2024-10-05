@@ -32,6 +32,8 @@ const PORT = process.env.PORT || 4000; // set port, listen for requests
 //------------------ROUTES------------------
 app.use("/api/applicant", applicantRouter);
 app.use("/api/fileupload", fileuploadRouter);
+app.use('/uploads', express.static('uploads'));
+
 
 
 // simple route

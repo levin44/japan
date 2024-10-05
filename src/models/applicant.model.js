@@ -1,7 +1,7 @@
 const sql = require('../config/database');
 
 module.exports = {
-  createApplicant: (data, callBack) => {
+  createApplicant: (applicantData, callBack) => {
     sql.query(
       `INSERT INTO applicant (
         full_name, 
@@ -26,32 +26,50 @@ module.exports = {
         alcohol, 
         tattoo, 
         color_blindness, 
-        been_to_japan
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        been_to_japan,
+        personalPhoto, 
+        cv, 
+        interview, 
+        ptTest, 
+        ptTestCertificate, 
+        passportCopy, 
+        driverLicense, 
+        qualificationEducation, 
+        qualificationWorking
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        data.fullName,
-        data.fullNameJapan,
-        data.dateOfBirth,
-        data.address,
-        data.addressJapan,
-        data.statusOfResidence,
-        data.statusOfResidenceJapan,
-        data.sex,
-        data.nationality,
-        data.nationalityJapan,
-        data.mobile,
-        data.email,
-        data.maritalStatus,
-        data.children,
-        data.bloodType,
-        data.comfortableHand,
-        data.height,
-        data.weight,
-        data.smoke,
-        data.alcohol,
-        data.tattoo,
-        data.colorBlindness,
-        data.beenToJapan
+        applicantData.fullName,
+        applicantData.fullNameJapan,
+        applicantData.dateOfBirth,
+        applicantData.address,
+        applicantData.addressJapan,
+        applicantData.statusOfResidence,
+        applicantData.statusOfResidenceJapan,
+        applicantData.sex,
+        applicantData.nationality,
+        applicantData.nationalityJapan,
+        applicantData.mobile,
+        applicantData.email,
+        applicantData.maritalStatus,
+        applicantData.children,
+        applicantData.bloodType,
+        applicantData.comfortableHand,
+        applicantData.height,
+        applicantData.weight,
+        applicantData.smoke,
+        applicantData.alcohol,
+        applicantData.tattoo,
+        applicantData.colorBlindness,
+        applicantData.beenToJapan,
+        applicantData.personalPhoto, 
+        applicantData.cv, 
+        applicantData.interview, 
+        applicantData.ptTest, 
+        applicantData.ptTestCertificate, 
+        applicantData.passportCopy, 
+        applicantData.driverLicense, 
+        applicantData.qualificationEducation, 
+        applicantData.qualificationWorking
       ],
       (error, results) => {
         if (error) {
@@ -61,7 +79,7 @@ module.exports = {
         const applicantId = results.insertId; // Get the ID of the inserted applicant
 
         // Insert Education Records
-        const educationValues = data.education.map((item) => [
+        const educationValues = applicantData.education.map((item) => [
           applicantId, item.year, item.month, item.background, item.yearJapan, item.monthJapan, item.backgroundJapan
         ]);
         const educationQuery = `
@@ -75,7 +93,7 @@ module.exports = {
           }
 
           // Insert Work History Records
-          const workHistoryValues = data.workHistory.map((item) => [
+          const workHistoryValues = applicantData.workHistory.map((item) => [
             applicantId, item.year, item.month, item.companyName, item.occupation, item.location,
             item.yearJapan, item.monthJapan, item.companyNameJapan, item.occupationJapan, item.locationJapan
           ]);
@@ -91,7 +109,7 @@ module.exports = {
             }
 
             // Insert Qualification Records
-            const qualificationValues = data.qualifications.map((item) => [
+            const qualificationValues = applicantData.qualifications.map((item) => [
               applicantId, item.year, item.month, item.qualification, item.yearJapan, item.monthJapan, item.qualificationJapan
             ]);
             const qualificationQuery = `

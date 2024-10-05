@@ -1,14 +1,22 @@
 const applicantModel = require('../models/applicant.model');
 
-module.exports = {
-  createApplicant: (data, callBack) => {
 
-    applicantModel.createApplicant(data, (err, results) => {
-      if (err) {
-        return callBack(err);
-      }
-      return callBack(null, results);
-    });
+module.exports = {
+  createApplicant: (formData,fileData, callBack) => {
+
+ // Combine form and file data for database insertion
+ const applicantData = {
+  ...formData,
+  ...fileData // This merges the file paths (personalPhoto, cv, etc.) into the formData object
+};
+
+applicantModel.createApplicant(applicantData, (err, results) => {
+  if (err) {
+    return callBack(err);
+  }
+  return callBack(null, results);
+});
+
   },
 
   getApplicantsById: (id, callBack) => {
