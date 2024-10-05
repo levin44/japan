@@ -9,6 +9,7 @@ const app = express();
 
 //----------------ROUTESOURCES--------------------
 const applicantRouter = require("./src/routes/applicant.routes");
+const fileuploadRouter = require("./src/routes/fileupload.routes");
 
 //----------------MIDDLEWARES--------------------
 app.use(morgan('dev'));
@@ -16,7 +17,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 // Enable requests from origins
 app.use(cors({
-    origin: ["http://localhost:3001"],
+    origin: ["http://localhost:3000"],
     methods: ["POST", "GET", "DELETE", "UPDATE", "PUT", "PATCH"],
     credentials: true
 }));
@@ -30,6 +31,8 @@ const PORT = process.env.PORT || 4000; // set port, listen for requests
 
 //------------------ROUTES------------------
 app.use("/api/applicant", applicantRouter);
+app.use("/api/fileupload", fileuploadRouter);
+
 
 // simple route
 app.get("/", (req, res) => {

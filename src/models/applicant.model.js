@@ -233,7 +233,7 @@ module.exports = {
 
   getApplicants: callBack => {
     sql.query(
-      `SELECT id,full_name, date_of_birth, sex FROM applicant`,
+      `SELECT id,full_name, date_of_birth, sex, marital_status, been_to_japan FROM applicant`,
       [],
       (error, results) => {
         if (error) {
@@ -244,6 +244,8 @@ module.exports = {
           fullName: `${item.full_name}`,
           dateOfBirth: `${item.date_of_birth}`,
           sex: `${item.sex}`,
+          maritalStatus: `${item.marital_status}`,
+          beenToJapan: `${item.been_to_japan}`,
         }))
 
         return callBack(null, mappedNames);
@@ -252,28 +254,174 @@ module.exports = {
   },
 
   updateApplicant: (id, data, callBack) => {
-    sql.query(
-      `UPDATE applicant SET Name = ?, Base_Salary = ?, Department_ID = ? WHERE Desig_ID = ?`,
-      [data.name, data.baseSalary, data.departmentId, id],
-      (error, results) => {
-        if (error) {
-          return callBack(error);
-        }
-        return callBack(null, results);
+    const updateApplicantQuery = `
+      UPDATE applicant SET
+        full_name = ?, 
+        full_name_jp = ?, 
+        date_of_birth = ?, 
+        address = ?, 
+        address_jp = ?, 
+        status_of_residence = ?, 
+        status_of_residence_jp = ?, 
+        sex = ?, 
+        nationality = ?, 
+        nationality_jp = ?, 
+        mobile = ?, 
+        email = ?, 
+        marital_status = ?, 
+        children = ?, 
+        blood_type = ?, 
+        comfortable_hand = ?, 
+        height = ?, 
+        weight = ?, 
+        smoke = ?, 
+        alcohol = ?, 
+        tattoo = ?, 
+        color_blindness = ?, 
+        been_to_japan = ?
+      WHERE id = ?`;
+  
+    const applicantValues = [
+      data.fullName,
+      data.fullNameJapan,
+      data.dateOfBirth,
+      data.address,
+      data.addressJapan,
+      data.statusOfResidence,
+      data.statusOfResidenceJapan,
+      data.sex,
+      data.nationality,
+      data.nationalityJapan,
+      data.mobile,
+      data.email,
+      data.maritalStatus,
+      data.children,
+      data.bloodType,
+      data.comfortableHand,
+      data.height,
+      data.weight,
+      data.smoke,
+      data.alcohol,
+      data.tattoo,
+      data.colorBlindness,
+      data.beenToJapan,
+      id
+    ];
+  
+    sql.query(updateApplicantQuery, applicantValues, (error, applicantResults) => {
+      if (error) {
+        return callBack(error);
       }
-    );
+  
+      // Update Education Records
+      const deleteEducationQuery = `DELETE FROM educationData WHERE applicant_id = ?`;
+      sql.query(deleteEducationQuery, [id], (deleteEducationError) => {
+        if (deleteEducationError) {
+          return callBack(deleteEducationError);
+        }
+  
+        const educationValues = data.education.map(item => [
+          id, item.year, item.month, item.background, item.yearJapan, item.monthJapan, item.backgroundJapan
+        ]);
+  
+        const insertEducationQuery = `
+          INSERT INTO educationData (applicant_id, year, month, background, year_japan, month_japan, background_japan)
+          VALUES ?`;
+        sql.query(insertEducationQuery, [educationValues], (insertEducationError) => {
+          if (insertEducationError) {
+            return callBack(insertEducationError);
+          }
+  
+          // Update Work History Records
+          const deleteWorkHistoryQuery = `DELETE FROM workHistoryData WHERE applicant_id = ?`;
+          sql.query(deleteWorkHistoryQuery, [id], (deleteWorkHistoryError) => {
+            if (deleteWorkHistoryError) {
+              return callBack(deleteWorkHistoryError);
+            }
+  
+            const workHistoryValues = data.workHistory.map(item => [
+              id, item.year, item.month, item.companyName, item.occupation, item.location,
+              item.yearJapan, item.monthJapan, item.companyNameJapan, item.occupationJapan, item.locationJapan
+            ]);
+  
+            const insertWorkHistoryQuery = `
+              INSERT INTO workHistoryData (applicant_id, year, month, company_name, occupation, location, year_japan, month_japan, company_name_japan, occupation_japan, location_japan)
+              VALUES ?`;
+  
+            sql.query(insertWorkHistoryQuery, [workHistoryValues], (insertWorkHistoryError) => {
+              if (insertWorkHistoryError) {
+                return callBack(insertWorkHistoryError);
+              }
+  
+              // Update Qualification Records
+              const deleteQualificationQuery = `DELETE FROM qualificationData WHERE applicant_id = ?`;
+              sql.query(deleteQualificationQuery, [id], (deleteQualificationError) => {
+                if (deleteQualificationError) {
+                  return callBack(deleteQualificationError);
+                }
+  
+                const qualificationValues = data.qualifications.map(item => [
+                  id, item.year, item.month, item.qualification, item.yearJapan, item.monthJapan, item.qualificationJapan
+                ]);
+  
+                const insertQualificationQuery = `
+                  INSERT INTO qualificationData (applicant_id, year, month, qualification, year_japan, month_japan, qualification_japan)
+                  VALUES ?`;
+  
+                sql.query(insertQualificationQuery, [qualificationValues], (insertQualificationError) => {
+                  if (insertQualificationError) {
+                    return callBack(insertQualificationError);
+                  }
+  
+                  return callBack(null, {
+                    message: "Applicant and related records updated successfully"
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
   },
+  
 
   deleteApplicant: (id, callBack) => {
-    sql.query(
-      `DELETE FROM applicant WHERE Desig_ID = ?`,
-      [id],
-      (error, results) => {
-        if (error) {
-          return callBack(error);
-        }
-        return callBack(null, results);
+    // Delete associated qualification records
+    const deleteQualificationQuery = `DELETE FROM qualificationData WHERE applicant_id = ?`;
+    sql.query(deleteQualificationQuery, [id], (qualificationError) => {
+      if (qualificationError) {
+        return callBack(qualificationError);
       }
-    );
-  }
+  
+      // Delete associated work history records
+      const deleteWorkHistoryQuery = `DELETE FROM workHistoryData WHERE applicant_id = ?`;
+      sql.query(deleteWorkHistoryQuery, [id], (workHistoryError) => {
+        if (workHistoryError) {
+          return callBack(workHistoryError);
+        }
+  
+        // Delete associated education records
+        const deleteEducationQuery = `DELETE FROM educationData WHERE applicant_id = ?`;
+        sql.query(deleteEducationQuery, [id], (educationError) => {
+          if (educationError) {
+            return callBack(educationError);
+          }
+  
+          // Finally, delete the applicant
+          const deleteApplicantQuery = `DELETE FROM applicant WHERE id = ?`;
+          sql.query(deleteApplicantQuery, [id], (applicantError, applicantResults) => {
+            if (applicantError) {
+              return callBack(applicantError);
+            }
+  
+            return callBack(null, {
+              message: "Applicant and all related records deleted successfully"
+            });
+          });
+        });
+      });
+    });
+  },
+  
 };
