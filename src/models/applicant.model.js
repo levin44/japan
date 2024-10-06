@@ -270,77 +270,248 @@ module.exports = {
   },
 
   updateApplicant: (id, data, callBack) => {
-    const updateApplicantQuery = `
-      UPDATE applicant SET
-        full_name = ?, 
-        full_name_jp = ?, 
-        date_of_birth = ?, 
-        address = ?, 
-        address_jp = ?, 
-        status_of_residence = ?, 
-        status_of_residence_jp = ?, 
-        sex = ?, 
-        nationality = ?, 
-        nationality_jp = ?, 
-        mobile = ?, 
-        email = ?, 
-        marital_status = ?, 
-        children = ?, 
-        blood_type = ?, 
-        comfortable_hand = ?, 
-        height = ?, 
-        weight = ?, 
-        smoke = ?, 
-        alcohol = ?, 
-        tattoo = ?, 
-        color_blindness = ?, 
-        been_to_japan = ?,
-        personalPhoto = ?, 
-        cv  = ?, 
-        interview = ?, 
-        ptTest = ?, 
-        ptTestCertificate = ?, 
-        passportCopy = ?, 
-        driverLicense = ?, 
-        qualificationEducation = ?, 
-        qualificationWorking = ?
-      WHERE id = ?`;
+      // Base part of the query
+  let updateApplicantQuery = `UPDATE applicant SET `;
+  const applicantValues = [];
 
-    const applicantValues = [
-      data.fullName,
-      data.fullNameJapan,
-      data.dateOfBirth,
-      data.address,
-      data.addressJapan,
-      data.statusOfResidence,
-      data.statusOfResidenceJapan,
-      data.sex,
-      data.nationality,
-      data.nationalityJapan,
-      data.mobile,
-      data.email,
-      data.maritalStatus,
-      data.children,
-      data.bloodType,
-      data.comfortableHand,
-      data.height,
-      data.weight,
-      data.smoke,
-      data.alcohol,
-      data.tattoo,
-      data.colorBlindness,
-      data.beenToJapan,
-      data.personalPhoto,
-      data.cv,
-      data.interview,
-      data.ptTest,
-      data.ptTestCertificate,
-      data.passportCopy,
-      data.driverLicense,
-      data.qualificationEducation,
-      data.qualificationWorking,
-      id
-    ];
+  // Add each field dynamically if it's not null
+  if (data.fullName) {
+    updateApplicantQuery += `full_name = ?, `;
+    applicantValues.push(data.fullName);
+  }
+
+  if (data.fullNameJapan) {
+    updateApplicantQuery += `full_name_jp = ?, `;
+    applicantValues.push(data.fullNameJapan);
+  }
+
+  if (data.dateOfBirth) {
+    updateApplicantQuery += `date_of_birth = ?, `;
+    applicantValues.push(data.dateOfBirth);
+  }
+
+  if (data.address) {
+    updateApplicantQuery += `address = ?, `;
+    applicantValues.push(data.address);
+  }
+
+  if (data.addressJapan) {
+    updateApplicantQuery += `address_jp = ?, `;
+    applicantValues.push(data.addressJapan);
+  }
+
+  if (data.statusOfResidence) {
+    updateApplicantQuery += `status_of_residence = ?, `;
+    applicantValues.push(data.statusOfResidence);
+  }
+
+  if (data.statusOfResidenceJapan) {
+    updateApplicantQuery += `status_of_residence_jp = ?, `;
+    applicantValues.push(data.statusOfResidenceJapan);
+  }
+
+  if (data.sex) {
+    updateApplicantQuery += `sex = ?, `;
+    applicantValues.push(data.sex);
+  }
+
+  if (data.nationality) {
+    updateApplicantQuery += `nationality = ?, `;
+    applicantValues.push(data.nationality);
+  }
+
+  if (data.nationalityJapan) {
+    updateApplicantQuery += `nationality_jp = ?, `;
+    applicantValues.push(data.nationalityJapan);
+  }
+
+  if (data.mobile) {
+    updateApplicantQuery += `mobile = ?, `;
+    applicantValues.push(data.mobile);
+  }
+
+  if (data.email) {
+    updateApplicantQuery += `email = ?, `;
+    applicantValues.push(data.email);
+  }
+
+  if (data.maritalStatus) {
+    updateApplicantQuery += `marital_status = ?, `;
+    applicantValues.push(data.maritalStatus);
+  }
+
+  if (data.children) {
+    updateApplicantQuery += `children = ?, `;
+    applicantValues.push(data.children);
+  }
+
+  if (data.bloodType) {
+    updateApplicantQuery += `blood_type = ?, `;
+    applicantValues.push(data.bloodType);
+  }
+
+  if (data.comfortableHand) {
+    updateApplicantQuery += `comfortable_hand = ?, `;
+    applicantValues.push(data.comfortableHand);
+  }
+
+  if (data.height) {
+    updateApplicantQuery += `height = ?, `;
+    applicantValues.push(data.height);
+  }
+
+  if (data.weight) {
+    updateApplicantQuery += `weight = ?, `;
+    applicantValues.push(data.weight);
+  }
+
+  if (data.smoke) {
+    updateApplicantQuery += `smoke = ?, `;
+    applicantValues.push(data.smoke);
+  }
+
+  if (data.alcohol) {
+    updateApplicantQuery += `alcohol = ?, `;
+    applicantValues.push(data.alcohol);
+  }
+
+  if (data.tattoo) {
+    updateApplicantQuery += `tattoo = ?, `;
+    applicantValues.push(data.tattoo);
+  }
+
+  if (data.colorBlindness) {
+    updateApplicantQuery += `color_blindness = ?, `;
+    applicantValues.push(data.colorBlindness);
+  }
+
+  if (data.beenToJapan) {
+    updateApplicantQuery += `been_to_japan = ?, `;
+    applicantValues.push(data.beenToJapan);
+  }
+
+    // Fields you want to conditionally update
+    if (data.personalPhoto !== null) {
+      updateApplicantQuery += `personalPhoto = ?, `;
+      applicantValues.push(data.personalPhoto);
+    }
+  
+    if (data.cv !== null) {
+      updateApplicantQuery += `cv = ?, `;
+      applicantValues.push(data.cv);
+    }
+  
+    if (data.interview !== null) {
+      updateApplicantQuery += `interview = ?, `;
+      applicantValues.push(data.interview);
+    }
+  
+    if (data.ptTest !== null) {
+      updateApplicantQuery += `ptTest = ?, `;
+      applicantValues.push(data.ptTest);
+    }
+  
+    if (data.ptTestCertificate !== null) {
+      updateApplicantQuery += `ptTestCertificate = ?, `;
+      applicantValues.push(data.ptTestCertificate);
+    }
+  
+    if (data.passportCopy !== null) {
+      updateApplicantQuery += `passportCopy = ?, `;
+      applicantValues.push(data.passportCopy);
+    }
+  
+    if (data.driverLicense !== null) {
+      updateApplicantQuery += `driverLicense = ?, `;
+      applicantValues.push(data.driverLicense);
+    }
+  
+    if (data.qualificationEducation !== null) {
+      updateApplicantQuery += `qualificationEducation = ?, `;
+      applicantValues.push(data.qualificationEducation);
+    }
+  
+    if (data.qualificationWorking !== null) {
+      updateApplicantQuery += `qualificationWorking = ?, `;
+      applicantValues.push(data.qualificationWorking);
+    }
+  
+    // Remove trailing comma and add WHERE clause
+    updateApplicantQuery = updateApplicantQuery.slice(0, -2); // Remove the last comma
+    updateApplicantQuery += ` WHERE id = ?`;
+    applicantValues.push(id);
+    
+    // const updateApplicantQuery = `
+    //   UPDATE applicant SET
+    //     full_name = ?, 
+    //     full_name_jp = ?, 
+    //     date_of_birth = ?, 
+    //     address = ?, 
+    //     address_jp = ?, 
+    //     status_of_residence = ?, 
+    //     status_of_residence_jp = ?, 
+    //     sex = ?, 
+    //     nationality = ?, 
+    //     nationality_jp = ?, 
+    //     mobile = ?, 
+    //     email = ?, 
+    //     marital_status = ?, 
+    //     children = ?, 
+    //     blood_type = ?, 
+    //     comfortable_hand = ?, 
+    //     height = ?, 
+    //     weight = ?, 
+    //     smoke = ?, 
+    //     alcohol = ?, 
+    //     tattoo = ?, 
+    //     color_blindness = ?, 
+    //     been_to_japan = ?,
+    //     personalPhoto = ?, 
+    //     cv  = ?, 
+    //     interview = ?, 
+    //     ptTest = ?, 
+    //     ptTestCertificate = ?, 
+    //     passportCopy = ?, 
+    //     driverLicense = ?, 
+    //     qualificationEducation = ?, 
+    //     qualificationWorking = ?
+    //   WHERE id = ?`;
+
+    // const applicantValues = [
+    //   data.fullName,
+    //   data.fullNameJapan,
+    //   data.dateOfBirth,
+    //   data.address,
+    //   data.addressJapan,
+    //   data.statusOfResidence,
+    //   data.statusOfResidenceJapan,
+    //   data.sex,
+    //   data.nationality,
+    //   data.nationalityJapan,
+    //   data.mobile,
+    //   data.email,
+    //   data.maritalStatus,
+    //   data.children,
+    //   data.bloodType,
+    //   data.comfortableHand,
+    //   data.height,
+    //   data.weight,
+    //   data.smoke,
+    //   data.alcohol,
+    //   data.tattoo,
+    //   data.colorBlindness,
+    //   data.beenToJapan,
+    //   data.personalPhoto,
+    //   data.cv,
+    //   data.interview,
+    //   data.ptTest,
+    //   data.ptTestCertificate,
+    //   data.passportCopy,
+    //   data.driverLicense,
+    //   data.qualificationEducation,
+    //   data.qualificationWorking,
+    //   id
+    // ];
 
     sql.query(updateApplicantQuery, applicantValues, (error, applicantResults) => {
       if (error) {
