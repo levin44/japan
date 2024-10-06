@@ -33,17 +33,6 @@ applicantModel.createApplicant(applicantData, (err, results) => {
     });
   },
 
-  getApplicantsByDepartment: (id, callBack) => {
-    applicantModel.getApplicantsByDepartment(id, (err, results) => {
-      if (err) {
-        return callBack(err);
-      }
-      if (!results.length) {
-        return callBack(new Error('Record not found'));
-      }
-      return callBack(null, results[0]);
-    });
-  },
 
   getApplicants: callBack => {
     applicantModel.getApplicants((err, results) => {
@@ -54,8 +43,12 @@ applicantModel.createApplicant(applicantData, (err, results) => {
     });
   },
 
-  updateApplicant: (id, data, callBack) => {
-
+  updateApplicant: (id, formData,fileData, callBack) => {
+ // Combine form and file data for database insertion
+ const data = {
+  ...formData,
+  ...fileData // This merges the file paths (personalPhoto, cv, etc.) into the formData object
+};
     applicantModel.updateApplicant(id, data, (err, results) => {
       if (err) {
         return callBack(err);
@@ -63,6 +56,7 @@ applicantModel.createApplicant(applicantData, (err, results) => {
       return callBack(null, results);
     });
   },
+  
 
   deleteApplicant: (id, callBack) => {
     applicantModel.deleteApplicant(id, (err, results) => {
