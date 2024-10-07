@@ -18,7 +18,7 @@ app.use(express.json());
 // Enable requests from origins
 
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: '*',
     methods: ["POST", "GET", "DELETE", "UPDATE", "PUT", "PATCH"],
     credentials: true
 }));
