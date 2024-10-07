@@ -1,14 +1,15 @@
 const applicantService = require('../services/applicant.service');
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config(); 
 
 const storage = multer.diskStorage({
-  destination: './uploads/', // You can set a different path if needed
+  destination: process.env.FILE_UPLOAD, // You can set a different path if needed
   filename: (req, file, cb) => {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
 });
-
+   
 const upload = multer({ storage }).fields([
 { name: 'personalPhoto' },
 { name: 'cv' },
