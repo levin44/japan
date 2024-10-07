@@ -4,7 +4,11 @@ const path = require('path');
 require('dotenv').config(); 
 
 const storage = multer.diskStorage({
-  destination: process.env.FILE_UPLOAD, // You can set a different path if needed
+  destination: (req, file, cb) => {
+    const uploadPath = process.env.FILE_UPLOAD; // Use the environment variable
+    cb(null, uploadPath); // Destination directory (absolute path in production)
+  },
+  
   filename: (req, file, cb) => {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
