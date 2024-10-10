@@ -15,15 +15,15 @@ const storage = multer.diskStorage({
 });
    
 const upload = multer({ storage }).fields([
-{ name: 'personalPhoto' },
-{ name: 'cv' },
-{ name: 'interview' },
-{ name: 'ptTest' },
-{ name: 'ptTestCertificate' },
-{ name: 'passportCopy' },
-{ name: 'driverLicense' },
-{ name: 'qualificationEducation' },
-{ name: 'qualificationWorking' }
+  { name: 'personalPhoto', maxCount: 1 },  // Single file upload
+  { name: 'cv', maxCount: 1 },
+  { name: 'interview', maxCount: 1 },
+  { name: 'ptTest', maxCount: 1 },
+  { name: 'ptTestCertificate', maxCount: 1 },
+  { name: 'passportCopy', maxCount: 1 },
+  { name: 'driverLicense', maxCount: 1 },
+  { name: 'qualificationEducation', maxCount: 1 },  
+  { name: 'qualificationWorking', maxCount: 10 }    // Multiple file upload
 ]);
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
         passportCopy: passportCopy ? passportCopy[0].path : null,
         driverLicense: driverLicense ? driverLicense[0].path : null,
         qualificationEducation: qualificationEducation ? qualificationEducation[0].path : null,
-        qualificationWorking: qualificationWorking ? qualificationWorking[0].path : null,
+        qualificationWorking: qualificationWorking ? qualificationWorking.map(file => file.path).join(',') : null
       };
 
       // Now call your service to handle saving the data
