@@ -3,6 +3,7 @@ const applicantModel = require('../models/applicant.model');
 
 module.exports = {
   createApplicant: (formData,fileData, callBack) => {
+    console.log("filedata", fileData);
 
  // Combine form and file data for database insertion
  const applicantData = {
@@ -44,6 +45,7 @@ applicantModel.createApplicant(applicantData, (err, results) => {
   },
 
   updateApplicant: (id, formData,fileData, callBack) => {
+    console.log("filedata", fileData);
  // Combine form and file data for database insertion
  const data = {
   ...formData,

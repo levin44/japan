@@ -110,6 +110,8 @@ module.exports = {
         personalPhoto, cv, interview, ptTest, ptTestCertificate, passportCopy, driverLicense, qualificationEducation, qualificationWorking
       } = req.files;
       
+
+
       const fileData = {
         personalPhoto: req.files.personalPhoto ? req.files.personalPhoto[0].path : null,
         cv: req.files.cv ? req.files.cv[0].path : null,
@@ -119,7 +121,7 @@ module.exports = {
         passportCopy: passportCopy ? passportCopy[0].path : null,
         driverLicense: driverLicense ? driverLicense[0].path : null,
         qualificationEducation: qualificationEducation ? qualificationEducation[0].path : null,
-        qualificationWorking: qualificationWorking ? qualificationWorking[0].path : null,
+        qualificationWorking: qualificationWorking ? qualificationWorking.map(file => file.path).join(',') : null
       };
 
 
